@@ -113,17 +113,24 @@ public class EmployeeController {
         return "redirect:/employees";
     }
 
+    // 従業員更新画面表示
+    @GetMapping(value ="/{code}/update")
+    public String getEmployee(@PathVariable("code") Integer code,Model model) {
+        if(code==null) {
+            return "employees/update";
+        }else {
+            model.addAttribute("employee",employeeService.getEmployee(code));
+            return "employees/update";
+        }
+    }
+
     // 従業員更新処理
     @PostMapping(value = "/{code}/update")
     public String update(@Validated Employee employee, BindingResult res, Model model） {
-
-        ErrorKinds result = employeeService.save(employee);
-
-        if (ErrorMessage.contains(result)) {
-            model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
-            return create(employee);
+        if(res.hasErrors()) {
+            return getEmployee(null,model);
         }
-
+        employeeService.saveEmployee(employee);
         return "redirect:/employees/list";
     }
 

@@ -121,16 +121,14 @@ public class EmployeeService {
         return passwordLength < 8 || 16 < passwordLength;
     }
 
+    // 従業員を1件検索して返す
+    public Employee getEmployee(Integer code) {
+        return employeeRepository.findById(code).get();
+    }
+
     // 従業員の登録処理を行う
     @Transactional
     public Employee saveEmployee(Employee employee) {
         return employeeRepository.save(employee);
-    }
-
-    @Transactional
-    public void deleteEmployee(Set<Integer> codeck) {
-        for(Integer code : codeck) {
-            employeeRepository.deleteById(code);
-        }
     }
 }

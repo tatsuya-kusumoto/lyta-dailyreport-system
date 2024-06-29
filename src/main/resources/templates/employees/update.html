@@ -2,7 +2,6 @@
 <html class="h-100" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="common/header :: head_fragment(title=従業員更新)">
-<link rel="stylesheet"th:href="@{/css/bootstrap.min.css}">
 </head>
 
 <body class="h-100 overflow-hidden">
@@ -18,7 +17,10 @@
             <div class="col-xl-12">
                     <div class="card">
                         <div class="card-body">
-                            <form th:action="@{/employees/add}" th:object="${employee}" th:method="post">
+                            パスワードは変更する場合のみ入力してください
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/employees/{code}/update(code=${code})}" th:object="${employee}" th:method="post">
                                 <div class="wizard wizard-success mb-4">
                                     <div class="mb-3">
                                         <label class="form-label" for="code">社員番号</label>
