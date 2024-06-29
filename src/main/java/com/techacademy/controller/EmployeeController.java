@@ -113,4 +113,18 @@ public class EmployeeController {
         return "redirect:/employees";
     }
 
+    // 従業員更新処理
+    @PostMapping(value = "/{code}/update")
+    public String update(@Validated Employee employee, BindingResult res, Model model） {
+
+        ErrorKinds result = employeeService.save(employee);
+
+        if (ErrorMessage.contains(result)) {
+            model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
+            return create(employee);
+        }
+
+        return "redirect:/employees/list";
+    }
+
 }
