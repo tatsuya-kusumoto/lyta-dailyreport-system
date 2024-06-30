@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import com.techacademy.constants.ErrorKinds;
 import com.techacademy.entity.Employee;
-import com.techacademy.entity.User;
 import com.techacademy.repository.EmployeeRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -119,11 +118,6 @@ public class EmployeeService {
         // 桁数チェック
         int passwordLength = employee.getPassword().length();
         return passwordLength < 8 || 16 < passwordLength;
-    }
-
-    // 従業員を1件検索して返す
-    public Employee getEmployee(Integer code) {
-        return employeeRepository.findById(code).get();
     }
 
     // 従業員の登録処理を行う

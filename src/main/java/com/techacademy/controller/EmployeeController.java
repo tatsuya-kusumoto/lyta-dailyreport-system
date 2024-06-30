@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.stereotype.Controller;
 
 import com.techacademy.constants.ErrorKinds;
 import com.techacademy.constants.ErrorMessage;
@@ -115,11 +116,11 @@ public class EmployeeController {
 
     // 従業員更新画面表示
     @GetMapping(value ="/{code}/update")
-    public String getEmployee(@PathVariable("code") Integer code,Model model) {
+    public String getEmployee(@PathVariable("code") String code, Model model) {
         if(code==null) {
             return "employees/update";
         }else {
-            model.addAttribute("employee",employeeService.getEmployee(code));
+            model.addAttribute("employee",employeeService.findByCode(code));
             return "employees/update";
         }
     }
