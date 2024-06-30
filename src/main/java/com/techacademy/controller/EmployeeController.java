@@ -116,8 +116,9 @@ public class EmployeeController {
 
     // 従業員更新画面表示
     @GetMapping(value ="/{code}/update")
-    public String getEmployee(@PathVariable("code") String code, Model model) {
+    public String getEmployee(@PathVariable("code") String code, Model model,@ModelAttribute Employee employee) {
         if(code==null) {
+            model.addAttribute("employee",employee);
             return "employees/update";
         }else {
             model.addAttribute("employee",employeeService.findByCode(code));
@@ -129,7 +130,7 @@ public class EmployeeController {
     @PostMapping(value = "/{code}/update")
     public String update(@Validated Employee employee, BindingResult res, Model model) {
         if(res.hasErrors()) {
-            return getEmployee(null,model);
+            return getEmployee(null,model,employee);
         }
         employeeService.saveEmployee(employee);
         return "redirect:/employees/list";
