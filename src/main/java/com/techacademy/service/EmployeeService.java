@@ -74,7 +74,7 @@ public class EmployeeService {
         return employeeRepository.findAll();
     }
 
-    // 1件を検索
+ // 1件を検索
     public Employee findByCode(String code) {
         // findByIdで検索
         Optional<Employee> option = employeeRepository.findById(code);
@@ -123,6 +123,14 @@ public class EmployeeService {
     // 従業員の登録処理を行う
     @Transactional
     public Employee saveEmployee(Employee employee) {
+
+        employee.setDeleteFlg(false);
+
+        LocalDateTime now = LocalDateTime.now();
+        employee.setCreatedAt(now);
+        employee.setUpdatedAt(now);
+
         return employeeRepository.save(employee);
     }
+
 }

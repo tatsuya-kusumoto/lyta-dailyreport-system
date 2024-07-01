@@ -115,25 +115,26 @@ public class EmployeeController {
     }
 
     // 従業員更新画面表示
-    @GetMapping(value ="/{code}/update")
+    @GetMapping(value = "/{code}/update")
     public String getEmployee(@PathVariable("code") String code, Model model,@ModelAttribute Employee employee) {
-        if(code==null) {
+        if (code == null) {
             model.addAttribute("employee",employee);
             return "employees/update";
-        }else {
-            model.addAttribute("employee",employeeService.findByCode(code));
+        } else {
+            model.addAttribute("employee", employeeService.findByCode(code));
             return "employees/update";
         }
     }
 
     // 従業員更新処理
+
     @PostMapping(value = "/{code}/update")
-    public String update(@Validated Employee employee, BindingResult res, Model model) {
+    public String update(@Validated Employee employee,BindingResult res, Model model) {
         if(res.hasErrors()) {
-            return getEmployee(null,model,employee);
+            return getEmployee(null, model, employee);
         }
         employeeService.saveEmployee(employee);
-        return "redirect:/employees/list";
+        return "redirect:/employees";
     }
 
 }
