@@ -16,7 +16,7 @@
             </div>
             <div class="col-xl-12">
                     <div class="card">
-                        <div class="card-body">
+                        <div class="card-header">
                             パスワードは変更する場合のみ入力してください
                         </div>
                         <div class="card-body">
@@ -25,9 +25,7 @@
                                     <div class="mb-3">
                                         <label class="form-label" for="code">社員番号</label>
                                         <p class="mb-1"></p>
-                                        <div class="col-md-7">
-                                            <input class="form-control" type="hidden" th:value="*{code}" id="code">
-                                        </div>
+                                        <p th:text="*{code}" id="code"></p>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label" for="name">氏名</label>

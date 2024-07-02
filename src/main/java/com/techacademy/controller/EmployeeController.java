@@ -130,10 +130,28 @@ public class EmployeeController {
 
     @PostMapping(value = "/{code}/update")
     public String update(@Validated Employee employee,BindingResult res, Model model) {
-        if(res.hasErrors()) {
+
+        // 入力チェック
+        if (res.hasErrors()) {
             return getEmployee(null, model, employee);
         }
-        employeeService.saveEmployee(employee);
+
+        // 論理削除を行った従業員番号を指定すると例外となるためtry~catchで対応
+        // (findByIdでは削除フラグがTRUEのデータが取得出来ないため)
+        try {
+            ErrorKinds result = employeeService.saveEmployee(employee);
+
+            if (ErrorMessage.contains(result)) {
+                model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
+                return getEmployee(null, model, employee);
+            }
+
+        } catch (DataIntegrityViolationException e) {
+            model.addAttribute(ErrorMessage.getErrorName(ErrorKinds.DUPLICATE_EXCEPTION_ERROR),
+                    ErrorMessage.getErrorValue(ErrorKinds.DUPLICATE_EXCEPTION_ERROR));
+            return getEmployee(null, model, employee);
+        }
+
         return "redirect:/employees";
     }
 

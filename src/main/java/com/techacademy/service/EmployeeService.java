@@ -74,7 +74,7 @@ public class EmployeeService {
         return employeeRepository.findAll();
     }
 
- // 1件を検索
+    // 1件を検索
     public Employee findByCode(String code) {
         // findByIdで検索
         Optional<Employee> option = employeeRepository.findById(code);
@@ -122,15 +122,27 @@ public class EmployeeService {
 
     // 従業員の登録処理を行う
     @Transactional
-    public Employee saveEmployee(Employee employee) {
+    public ErrorKinds saveEmployee(Employee employee) {
 
+        // パスワードが空の場合、既存の値を設定
+        if ("".equals(employee.getPassword())) {
+            employee.setPassword(findByCode(employee.getCode()).getPassword());
+        } else {
+            // パスワードチェック
+            ErrorKinds result = employeePasswordCheck(employee);
+            if (ErrorKinds.CHECK_OK != result) {
+                return result;
+            }
+            employee.setPassword(passwordEncoder.encode(employee.getPassword()));
+        }
         employee.setDeleteFlg(false);
 
         LocalDateTime now = LocalDateTime.now();
         employee.setCreatedAt(now);
         employee.setUpdatedAt(now);
+        employeeRepository.save(employee);
 
-        return employeeRepository.save(employee);
+        return ErrorKinds.CHECK_OK;
     }
 
 }
