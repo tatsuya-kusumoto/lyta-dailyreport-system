@@ -9,7 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.techacademy.constants.ErrorKinds;
-import com.techacademy.entity.Employee;
 import com.techacademy.entity.Report;
 import com.techacademy.repository.ReportRepository;
 
@@ -93,10 +92,5 @@ public class ReportService {
         reportRepository.save(report);
         return ErrorKinds.SUCCESS;
 
-    }
-
-    public List<Employee> findByEmployee(Employee employee) {
-
-        return ;
     }
 }
