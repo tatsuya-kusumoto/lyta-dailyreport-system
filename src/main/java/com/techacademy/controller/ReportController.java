@@ -50,42 +50,42 @@ public class ReportController {
 
     // 日報新規登録画面
     @GetMapping(value = "/add")
-    public String create(@AuthenticationPrincipal UserDetail userDetail,@ModelAttribute Report report, Model model) {
-        model.addAttribute("employeeName",userDetail.getEmployee().getName());
-        model.addAttribute("report",report);
+    public String create(@AuthenticationPrincipal UserDetail userDetail, @ModelAttribute Report report, Model model) {
+        model.addAttribute("employeeName", userDetail.getEmployee().getName());
+        model.addAttribute("report", report);
         return "report/new";
     }
 
     // 日報新規登録処理
     @PostMapping(value = "/add")
-    public String add(@Validated Report report, BindingResult res, @AuthenticationPrincipal UserDetail userDetail,Model model) {
+    public String add(@Validated Report report, BindingResult res, @AuthenticationPrincipal UserDetail userDetail, Model model) {
 
         // 入力チェック
         if (res.hasErrors()) {
-            return create(userDetail,report,model);
+            return create(userDetail, report, model);
         }
 
         // 論理削除を行った従業員番号を指定すると例外となるためtry~catchで対応
         // (findByIdでは削除フラグがTRUEのデータが取得出来ないため)
         try {
-            ErrorKinds result = reportService.save(report,userDetail);
+            ErrorKinds result = reportService.save(report, userDetail);
 
             if (ErrorMessage.contains(result)) {
                 model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
-                return create(userDetail,report,model);
+                return create(userDetail, report, model);
             }
 
         } catch (DataIntegrityViolationException e) {
             model.addAttribute(ErrorMessage.getErrorName(ErrorKinds.DUPLICATE_EXCEPTION_ERROR),
                     ErrorMessage.getErrorValue(ErrorKinds.DUPLICATE_EXCEPTION_ERROR));
-            return create(userDetail,report,model);
+            return create(userDetail, report, model);
         }
 
         return "redirect:/report";
     }
 
     // 日報削除処理
-    @PostMapping(value = "/{code}/delete")
+    @PostMapping(value = "/{id}/delete")
     public String delete(@PathVariable Integer id, Model model) {
 
         ErrorKinds result = reportService.delete(id);
@@ -100,37 +100,37 @@ public class ReportController {
     }
 
     // 日報更新
-    @GetMapping(value ="/{id}/update")
-    public String getReport(@PathVariable("id") Integer id,@AuthenticationPrincipal UserDetail userDetail, Model model, @ModelAttribute Report report) {
-        model.addAttribute("employeeName",userDetail.getEmployee().getName());
-        if(id==null) {
-            model.addAttribute("report",report);
+    @GetMapping(value = "/{id}/update")
+    public String getReport(@PathVariable("id") Integer id, @AuthenticationPrincipal UserDetail userDetail, Model model, @ModelAttribute Report report) {
+        model.addAttribute("employeeName", userDetail.getEmployee().getName());
+        if (id == null) {
+            model.addAttribute("report", report);
             return "report/update";
-        }else {
-            model.addAttribute("report",reportService.findByCode(id));
+        } else {
+            model.addAttribute("report", reportService.findByCode(id));
             return "report/update";
         }
     }
 
     // 日報更新処理
     @PostMapping(value = "/{id}/update")
-    public String update(@Validated Report report,BindingResult res, @AuthenticationPrincipal UserDetail userDetail, Model model) {
-        if(res.hasErrors()) {
-            return getReport(null,userDetail, model, report);
+    public String update(@PathVariable("id") Integer id, @Validated Report report, BindingResult res, @AuthenticationPrincipal UserDetail userDetail, Model model) {
+        if (res.hasErrors()) {
+            return getReport(null, userDetail, model, report);
         }
 
         try {
-            ErrorKinds result = reportService.save(report,userDetail);
+            ErrorKinds result = reportService.saveReport(report, userDetail, id);
 
             if (ErrorMessage.contains(result)) {
                 model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
-                return create(userDetail,report,model);
+                return getReport(null, userDetail, model, report);
             }
 
         } catch (DataIntegrityViolationException e) {
             model.addAttribute(ErrorMessage.getErrorName(ErrorKinds.DUPLICATE_EXCEPTION_ERROR),
                     ErrorMessage.getErrorValue(ErrorKinds.DUPLICATE_EXCEPTION_ERROR));
-            return create(userDetail,report,model);
+            return getReport(null, userDetail, model, report);
         }
 
         return "redirect:/report";

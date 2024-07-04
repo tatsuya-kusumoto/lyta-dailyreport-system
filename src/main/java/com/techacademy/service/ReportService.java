@@ -3,15 +3,12 @@ package com.techacademy.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import com.techacademy.constants.ErrorKinds;
 import com.techacademy.entity.Report;
 import com.techacademy.repository.ReportRepository;
-
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -28,13 +25,13 @@ public class ReportService {
     @Transactional
     public ErrorKinds save(Report report,UserDetail userDetail) {
 
-        // 重複チェック
+     // 重複チェック
         if(report.getReportDate().isEqual(userDetail.getEmployee().getCreatedAt().toLocalDate())){
             return ErrorKinds.DATECHECK_ERROR;
         }
-
         report.setDeleteFlg(false);
 
+        report.setEmployee(userDetail.getEmployee());
         LocalDateTime now = LocalDateTime.now();
         report.setCreatedAt(now);
         report.setUpdatedAt(now);
@@ -76,21 +73,30 @@ public class ReportService {
 
     // 日報の登録処理を行う
     @Transactional
-    public ErrorKinds saveReport(Report report,UserDetail userDetail) {
+    public ErrorKinds saveReport(Report report,UserDetail userDetail,Integer id) {
 
-        // 重複チェック
-        if(report.getReportDate().isEqual(userDetail.getEmployee().getCreatedAt().toLocalDate())){
-            return ErrorKinds.DATECHECK_ERROR;
+        // 更新対象レポートリスト
+        List<Report> reportList = reportRepository.findByEmployee(userDetail.getEmployee());
+        // 更新前レポート
+        Report beforeReport = reportRepository.findById(id).get();
+
+        //レポートリストがnullでないかつ同一ID作成されていてかつレポート日付が重複
+        if(reportList != null && beforeReport.getEmployee().getCode().equals(userDetail.getEmployee().getCode()) && !beforeReport.getReportDate().equals(report.getReportDate())) {
+            for(Report rep:reportList) {
+                if(rep.getReportDate().equals(report.getReportDate())) {
+                    return ErrorKinds.DATECHECK_ERROR;
+                }
+            }
         }
 
         report.setDeleteFlg(false);
-
+        report.setEmployee(userDetail.getEmployee());
         LocalDateTime now = LocalDateTime.now();
         report.setCreatedAt(now);
         report.setUpdatedAt(now);
 
         reportRepository.save(report);
         return ErrorKinds.SUCCESS;
-
     }
+
 }
