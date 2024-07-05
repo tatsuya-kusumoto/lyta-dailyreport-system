@@ -1,6 +1,7 @@
 package com.techacademy.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,23 @@ public class ReportService {
         return reportRepository.findAll();
     }
 
+    public List<Report> findAllReport(UserDetail userDetail){
+
+        List<Report> findReport = new ArrayList<>();
+        List<Report> allReport = reportRepository.findAll();
+
+        if(userDetail.getAuthorities().equals("admin")) {
+            return allReport;
+        }
+        for(Report rep:allReport) {
+            if(userDetail.getEmployee().getCode().equals(rep.getEmployee().getCode())) {
+                findReport.add(rep);
+            }
+        }
+
+        return findReport;
+    }
+
     // 日報1件を検索
     public Report findByCode(Integer id) {
         // findByIdで検索
@@ -90,9 +108,9 @@ public class ReportService {
         }
 
         report.setDeleteFlg(false);
-        report.setEmployee(userDetail.getEmployee());
+        report.setEmployee(reportRepository.findById(id).get().getEmployee());
         LocalDateTime now = LocalDateTime.now();
-        report.setCreatedAt(now);
+        report.setCreatedAt(reportRepository.findById(id).get().getCreatedAt());
         report.setUpdatedAt(now);
 
         reportRepository.save(report);

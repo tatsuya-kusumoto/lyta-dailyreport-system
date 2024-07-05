@@ -32,10 +32,13 @@ public class ReportController {
 
     // 日報一覧画面
     @GetMapping
-    public String list(Model model) {
+    public String list(Model model,UserDetail userDetail) {
 
-        model.addAttribute("listSize", reportService.findAll().size());
-        model.addAttribute("reportList", reportService.findAll());
+        //model.addAttribute("listSize", reportService.findAll().size());
+        //model.addAttribute("reportList", reportService.findAll());
+
+        model.addAttribute("listSize", reportService.findAllReport(userDetail).size());
+        model.addAttribute("reportList", reportService.findAllReport(userDetail));
 
         return "report/list";
     }
@@ -103,6 +106,7 @@ public class ReportController {
     @GetMapping(value = "/{id}/update")
     public String getReport(@PathVariable("id") Integer id, @AuthenticationPrincipal UserDetail userDetail, Model model, @ModelAttribute Report report) {
         model.addAttribute("employeeName", userDetail.getEmployee().getName());
+        //model.addAttribute("employee",report.getEmployee().getName());
         if (id == null) {
             model.addAttribute("report", report);
             return "report/update";
