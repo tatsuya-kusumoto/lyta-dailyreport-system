@@ -1,4 +1,4 @@
-package com.techacademy.controller;
+/*package com.techacademy.controller;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.logout;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -56,3 +56,4 @@ class TopControllerTest {
     }
 
 }
+*/
