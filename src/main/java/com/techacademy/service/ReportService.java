@@ -63,7 +63,7 @@ public class ReportService {
         List<Report> findReport = new ArrayList<>();
         List<Report> allReport = reportRepository.findAll();
 
-        if(userDetail.getAuthorities().equals("admin")) {
+        if(userDetail.getEmployee().getRole().getValue().equals("管理者")) {
             return allReport;
         }
         for(Report rep:allReport) {

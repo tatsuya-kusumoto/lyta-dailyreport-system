@@ -32,10 +32,7 @@ public class ReportController {
 
     // 日報一覧画面
     @GetMapping
-    public String list(Model model,UserDetail userDetail) {
-
-        //model.addAttribute("listSize", reportService.findAll().size());
-        //model.addAttribute("reportList", reportService.findAll());
+    public String list(Model model,@AuthenticationPrincipal UserDetail userDetail) {
 
         model.addAttribute("listSize", reportService.findAllReport(userDetail).size());
         model.addAttribute("reportList", reportService.findAllReport(userDetail));
