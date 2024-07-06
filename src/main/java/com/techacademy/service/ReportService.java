@@ -110,6 +110,7 @@ public class ReportService {
         report.setDeleteFlg(false);
         report.setEmployee(reportRepository.findById(id).get().getEmployee());
         LocalDateTime now = LocalDateTime.now();
+        report.setReportDate(report.getReportDate());
         report.setCreatedAt(reportRepository.findById(id).get().getCreatedAt());
         report.setUpdatedAt(now);
 
